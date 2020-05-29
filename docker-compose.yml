@@ -1,0 +1,96 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_PASSWORD=postgres_password
+  redis:
+    image: 'redis:latest'
+
+
+  nginx:
+
+    depends_on:
+      - api
+      - client
+
+    # we are going to use that restart policy that we spoke about 
+    # a while ago, and for that we are going to use: restart: always
+    # because no matter what i always want to make sur Nginx is ready to go
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports: 
+      # the port 3050 on my machine should me mapped up to port 80 inside 
+      # the container
+      - '3050:80'
+
+
+  api:
+
+    depends_on:
+      - postgres
+
+    build:
+      # when you specify the docker file, you specify 
+      # just the name of the docker file
+      dockerfile: Dockerfile.dev
+      # to specify that we want to look in the server folder
+      # that's what the context property is for
+      context: ./server
+    volumes:
+      # if we look in the server Dockerfile.dev you'll remember that we
+      # have specified a WORKDIR (work directory) of /app
+      # so everything that is relative to us is inside of that app folder
+
+      # since the node_module folder is constructed based on the current 
+      # operating system, we need makes sur that the node_modules directory 
+      # inside the container does not get overwriteen by any node_modules 
+      # folder that we might have inside the client. 
+      # so here we are basically saying don't try to override or redirect 
+      # access to it just leave these folders as they are
+      - /app/node_modules
+
+      # anytime our application is trying to access anything inside the
+      # app directory inside the container, except of the /app/node_modules
+      # folder, it's going to essentially get redirected back to the server 
+      # directory inside of our current project folder
+      #
+      # now anytime we make any change to anything inside that server, will be 
+      # automatically reflected insode of the app folder of our container 
+      # and that's going to make sure that we don't have to rebuild our image
+      # anytime that we make a little change to our source code
+      - ./server:/app
+
+    # we need to make sure that we provide some environment variables to the 
+    # server service 
+    # to complete the following values check the documentation for more information
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+      
+  client:
+    stdin_open: true
+
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+
+  worker:
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes: 
+      - /app/node_modules
+      - ./worker:/app
+    
+    
