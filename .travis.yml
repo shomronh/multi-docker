@@ -1,0 +1,37 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  # the build context is ./client
+  - docker built -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+
+
+# the script section is the primary test running section, and if any of the scripts
+# that we add inside of here exit with the status code other than zero, then Travis CI
+# is going to assume that our build failed
+script:
+  # to make sure that our test script exits with a status code of either 0 or not 0
+  # we use: -- --coverage
+  - docker run stephengrider/react-test npm test -- --coverage
+
+
+# build images with productions version of the images
+after_success:
+  - docker build -t stephengrider/multi-client ./client
+  - docker build -t stephengrider/multi-nginx ./nginx
+  - docker build -t stephengrider/multi-server ./server
+  - docker build -t stephengrider/multi-worker ./worker
+
+  # log in to the Docker CLI:
+  # -------------------------
+  # the | sign represent a pipe, which shift that value into the next 
+  # following command
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # push images to docker hub
+  - docker push stephengrider/multi-client
+  - docker push stephengrider/multi-nginx
+  - docker push stephengrider/multi-server
+  - docker push stephengrider/multi-worker
