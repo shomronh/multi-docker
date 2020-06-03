@@ -5,21 +5,21 @@ services:
 
 before_install:
   # the build context is ./client
-  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t shomronh/react-test -f ./client/Dockerfile.dev ./client
 
 
 # the script section is the primary test running section, and if any of the scripts
 # that we add inside of here exit with the status code other than zero, then Travis CI
 # is going to assume that our build failed
 script:
-  - docker run -e CI=true stephengrider/react-test npm test
+  - docker run -e CI=true shomronh/react-test npm test
 
 # build images with productions version of the images
 after_success:
-  - docker build -t stephengrider/multi-client ./client
-  - docker build -t stephengrider/multi-nginx ./nginx
-  - docker build -t stephengrider/multi-server ./server
-  - docker build -t stephengrider/multi-worker ./worker
+  - docker build -t shomronh/multi-client ./client
+  - docker build -t shomronh/multi-nginx ./nginx
+  - docker build -t shomronh/multi-server ./server
+  - docker build -t shomronh/multi-worker ./worker
 
   # log in to the Docker CLI:
   # -------------------------
@@ -28,7 +28,7 @@ after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # push images to docker hub
-  - docker push stephengrider/multi-client
-  - docker push stephengrider/multi-nginx
-  - docker push stephengrider/multi-server
-  - docker push stephengrider/multi-worker
+  - docker push shomronh/multi-client
+  - docker push shomronh/multi-nginx
+  - docker push shomronh/multi-server
+  - docker push shomronh/multi-worker
