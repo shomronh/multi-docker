@@ -14,7 +14,7 @@ before_install:
 script:
   # to make sure that our test script exits with a status code of either 0 or not 0
   # we use: -- --coverage
-  - docker run stephengrider/react-test npm test -- --coverage
+  - docker run -e CI=true stephengrider/react-test npm test -- --coverage
 
 # build images with productions version of the images
 after_success:
