@@ -12,9 +12,7 @@ before_install:
 # that we add inside of here exit with the status code other than zero, then Travis CI
 # is going to assume that our build failed
 script:
-  # to make sure that our test script exits with a status code of either 0 or not 0
-  # we use: -- --coverage
-  - docker run -e CI=true stephengrider/react-test npm test -- --coverage
+  - docker run -e CI=true stephengrider/react-test npm test
 
 # build images with productions version of the images
 after_success:
