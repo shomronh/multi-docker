@@ -16,7 +16,6 @@ script:
   # we use: -- --coverage
   - docker run stephengrider/react-test npm test -- --coverage
 
-
 # build images with productions version of the images
 after_success:
   - docker build -t stephengrider/multi-client ./client
