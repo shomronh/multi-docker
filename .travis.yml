@@ -5,7 +5,7 @@ services:
 
 before_install:
   # the build context is ./client
-  - docker built -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
+  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
 
 
 # the script section is the primary test running section, and if any of the scripts
