@@ -17,7 +17,7 @@ script:
 # build images with productions version of the images
 after_success:
   - docker build -t shomronh/multi-client ./client
-  - docker build -t shomronh/multi-nginx ./nginx
+  - docker build -t shomronh/multi-nginx  ./nginx
   - docker build -t shomronh/multi-server ./server
   - docker build -t shomronh/multi-worker ./worker
 
