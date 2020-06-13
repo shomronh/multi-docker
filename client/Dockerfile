@@ -4,11 +4,11 @@ COPY ./package.json ./
 RUN npm install
 COPY . .
 
-# this CMD format not working
+# instead of using CMD use a RUN command
 # CMD ["npm","run","build"]
 
 # This works
-CMD npm run build
+RUN npm run build
 
 FROM nginx
 EXPOSE 3000
