@@ -34,6 +34,11 @@ after_success:
   - docker push shomronh/multi-worker
 
 deploy:
+
+  # What this is doing is forcing Travis to use the v2 (experimental) version of the dpl script 
+  # which does not have the bug.
+  edge: true
+
   provider: elasticbeanstalk
 
   # region can taken from our beanstalk url
@@ -54,6 +59,5 @@ deploy:
     branch: master
 
   access_key_id: $AWS_ACCESS_KEY
-  secret_access_key:
-    secure: $AWS_SECRET_KEY
+  secret_access_key: $AWS_SECRET_KEY
 
