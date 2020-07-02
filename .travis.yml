@@ -35,8 +35,8 @@ after_success:
 
 deploy:
 
-  # What this is doing is forcing Travis to use the v2 (experimental) version of the dpl script 
-  # which does not have the bug.
+  # What this is doing is forcing Travis to use the v2 (experimental) version of 
+  # the dpl script which does not have the bug.
   edge: true
 
   provider: elasticbeanstalk
